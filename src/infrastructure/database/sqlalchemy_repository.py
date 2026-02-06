@@ -18,30 +18,30 @@ class SqlAlchemyUrlRepository:
   def __init__(self, session: Session):
     self.session = session
 
-    def save(self, url: Url) -> None:
-      url_db_model = UrlModel(
-            original_url=url.original_url,
-            short_code=url.short_code,
-            created_at=url.created_at
-            # Nota: No pasamos 'id' porque la DB lo genera automáticamente
-        )
-        
-      self.session.add(url_db_model)
-      self.session.commit()
-      self.session.refresh(url_db_model)
+  def save(self, url: Url) -> None:
+    url_db_model = UrlModel(
+          original_url=url.original_url,
+          short_code=url.short_code,
+          created_at=url.created_at
+          # Nota: No pasamos 'id' porque la DB lo genera automáticamente
+      )
 
-      if url.id is None:
-        url.id = url_db_model.id
-      
-    def get_by_code(self, code: str) -> Optional[Url]:
-      url_db_model = self.session.query(UrlModel).filter_by(short_code=code).first()
+    self.session.add(url_db_model)
+    self.session.commit()
+    self.session.refresh(url_db_model)
 
-      if url_db_model:
-        return Url(
-          id=url_db_model.id,
-          original_url=url_db_model.original_url,
-          short_code=url_db_model.short_code,
-          created_at=url_db_model.created_at
-        )
+    if url.id is None:
+      url.id = url_db_model.id
+    
+  def get_by_code(self, code: str) -> Optional[Url]:
+    url_db_model = self.session.query(UrlModel).filter_by(short_code=code).first()
 
-      return None
+    if url_db_model:
+      return Url(
+        id=url_db_model.id,
+        original_url=url_db_model.original_url,
+        short_code=url_db_model.short_code,
+        created_at=url_db_model.created_at
+      )
+
+    return None

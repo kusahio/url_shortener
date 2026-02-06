@@ -9,12 +9,15 @@ class ShortenResponse(BaseModel):
     short_code: str
     original_url: str
 
+def get_url_shortener_service() -> UrlShortenerService:
+    raise NotImplementedError("Esta dependencia debe ser inyectada en main.py")
+
 router = APIRouter()
 
 @router.post("/shorten", response_model=ShortenResponse)
 def shorten_url(
     request: ShortenRequest,
-    service: UrlShortenerService = Depends() 
+    service: UrlShortenerService = Depends(get_url_shortener_service) 
 ):
     try:
         url_domain = service.shorten_url(request.url)
@@ -29,7 +32,7 @@ def shorten_url(
 @router.get("/{short_code}")
 def redirect_url(
     short_code: str,
-    service: UrlShortenerService = Depends()
+    service: UrlShortenerService = Depends(get_url_shortener_service)
 ):
     try:
         original_url = service.get_original_url(short_code)
