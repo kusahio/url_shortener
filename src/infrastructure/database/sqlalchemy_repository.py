@@ -23,7 +23,6 @@ class SqlAlchemyUrlRepository:
           original_url=url.original_url,
           short_code=url.short_code,
           created_at=url.created_at
-          # Nota: No pasamos 'id' porque la DB lo genera automáticamente
       )
 
     self.session.add(url_db_model)
